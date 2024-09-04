@@ -1,0 +1,17 @@
+{
+  "name": "cordova-plugin-play-integrity-check",
+  "version": "1.0.0",
+  "description": "This is cordova plugin to detect play intergrity",
+  "cordova": {
+    "id": "cordova-plugin-play-integrity-check",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "Pavan Madusha",
+  "license": "ISC"
+}

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-play-integrity-check" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>PlayIntegrity</name>
+    <js-module src="www/PlayIntegrity.js" name="PlayIntegrity">
+        <clobbers target="cordova.plugins.PlayIntegrity"/>
+    </js-module>
+
+    <platform name="android">
+        <framework src="com.google.android.play:integrity:1.1.0" />
+        
+        <config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.INTERNET" />
+        </config-file>
+
+        <source-file src="src/android/PlayIntegrity.java" target-dir="src/com/example/playintegrity" />
+    </platform>
+</plugin>
