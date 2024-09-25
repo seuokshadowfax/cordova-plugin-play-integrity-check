@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-play-integrity-check" version="1.0.0">
   <name>PlayIntegrity</name>
-  <js-module src="www/integrity.js" name="integrity">
+  <js-module src="www/PlayIntegrityPlugin.js" name="PlayIntegrityPlugin">
     <clobbers target="cordova.plugins.integrity" />
   </js-module>
 
   <platform name="android">
     <config-file target="res/xml/config.xml" parent="/*">
-      <feature name="Integrity">
-        <param name="android-package" value="vote.directdemocracy.integrity.Integrity"/>
+      <feature name="PlayIntegrityPlugin">
+        <param name="android-package" value="com.android.playintegrity.PlayIntegrityPlugin"/>
       </feature>
     </config-file>
-    <source-file src="src/android/Integrity.java" target-dir="src/vote/directdemocracy/integrity"/>
+    <config-file target="AndroidManifest.xml" parent="/*">
+        <uses-permission android:name="com.google.android.gms.permission.PLAY_INTEGRITY_API" />
+    </config-file>
+    <source-file src="src/android/PlayIntegrityPlugin.java" target-dir="src/com/android/playintegrity/PlayIntegrityPlugin" />
   </platform>
 </plugin>
