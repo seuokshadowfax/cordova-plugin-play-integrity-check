@@ -1,4 +1,4 @@
-package com.android.playintegrity.PlayIntegrityPlugin;
+// package com.android.playintegrity;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.OnCompleteListener;
