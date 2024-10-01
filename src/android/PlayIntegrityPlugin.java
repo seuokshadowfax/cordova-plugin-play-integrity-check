@@ -1,10 +1,6 @@
-package com.android.playintegrity.PlayIntegrityPlugin;
+package com.android.playintegrity;
 
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Tasks;
 import com.google.android.play.core.integrity.IntegrityManager;
 import com.google.android.play.core.integrity.IntegrityManagerFactory;
 import com.google.android.play.core.integrity.IntegrityTokenResponse;
@@ -14,6 +10,7 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import java.security.SecureRandom;
 import android.util.Base64;
 
@@ -29,7 +26,7 @@ public class PlayIntegrityPlugin extends CordovaPlugin {
     }
 
     private void getIntegrityToken(final CallbackContext callbackContext) {
-        IntegrityManager integrityManager = IntegrityManagerFactory.create(getContext());
+        IntegrityManager integrityManager = IntegrityManagerFactory.create(cordova.getActivity().getApplicationContext());
         Task<IntegrityTokenResponse> integrityTokenResponseTask = integrityManager.requestIntegrityToken(
             IntegrityTokenRequest.builder().setNonce(getNonce()).build());
 
@@ -45,10 +42,11 @@ public class PlayIntegrityPlugin extends CordovaPlugin {
 
     private String getNonce() {
         // Create a nonce for the request, should be unique per request
-        return Base64.encodeToString(UUID.randomUUID().toString().getBytes(), Base64.DEFAULT);
-    }
+        byte[] nonceBytes = new byte[16]; // 16 bytes
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(nonceBytes);
 
-    private Context getContext() {
-        return this.cordova.getActivity().getApplicationContext();
+        return Base64.encodeToString(nonceBytes, Base64.URL_SAFE | Base64.NO_WRAP);
+
     }
 }
