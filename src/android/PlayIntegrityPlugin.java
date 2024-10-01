@@ -1,4 +1,4 @@
-// package com.android.playintegrity;
+package com.android.playintegrity.PlayIntegrityPlugin;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,39 +18,37 @@ import java.security.SecureRandom;
 import android.util.Base64;
 
 public class PlayIntegrityPlugin extends CordovaPlugin {
+
     @Override
-    public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("getIntegrityToken")) {
-            String nonce = generateNonce();
-            // Call Play Integrity API here
-            IntegrityManager integrityManager = IntegrityManagerFactory.create(cordova.getActivity().getApplicationContext());
-
-            IntegrityTokenRequest request = IntegrityTokenRequest.builder().setNonce(nonce).build();
-
-            Task<IntegrityTokenResponse> integrityTokenResponse = integrityManager.requestIntegrityToken(request);
-
-            integrityTokenResponse.addOnSuccessListener(new OnSuccessListener<IntegrityTokenResponse>() {
-                @Override
-                public void onSuccess(IntegrityTokenResponse response) {
-                    callbackContext.success(response.token());
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(Exception e) {
-                    callbackContext.error(e.getMessage());
-                }
-            });
-
+            this.getIntegrityToken(callbackContext);
             return true;
         }
         return false;
     }
 
-    private String generateNonce() {
-        byte[] nonceBytes = new byte[16]; // 16 bytes
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(nonceBytes);
+    private void getIntegrityToken(final CallbackContext callbackContext) {
+        IntegrityManager integrityManager = IntegrityManagerFactory.create(getContext());
+        Task<IntegrityTokenResponse> integrityTokenResponseTask = integrityManager.requestIntegrityToken(
+            IntegrityTokenRequest.builder().setNonce(getNonce()).build());
 
-        return Base64.encodeToString(nonceBytes, Base64.URL_SAFE | Base64.NO_WRAP);
+        integrityTokenResponseTask.addOnSuccessListener(response -> {
+            String integrityToken = response.token();
+            callbackContext.success(integrityToken);
+        });
+
+        integrityTokenResponseTask.addOnFailureListener(e -> {
+            callbackContext.error("Integrity check failed: " + e.getMessage());
+        });
+    }
+
+    private String getNonce() {
+        // Create a nonce for the request, should be unique per request
+        return Base64.encodeToString(UUID.randomUUID().toString().getBytes(), Base64.DEFAULT);
+    }
+
+    private Context getContext() {
+        return this.cordova.getActivity().getApplicationContext();
     }
 }

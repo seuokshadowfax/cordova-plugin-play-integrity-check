@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-plugin-play-integrity-check" version="1.0.0">
   <name>PlayIntegrity</name>
   <js-module src="www/PlayIntegrityPlugin.js" name="PlayIntegrityPlugin">
-    <clobbers target="cordova.plugins.integrity" />
+    <clobbers target="window.PlayIntegrityPlugin" />
   </js-module>
 
   <platform name="android">
